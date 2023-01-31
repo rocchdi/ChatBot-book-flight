@@ -1,5 +1,3 @@
-aiohttp
-asyncio>=3.4.3
 requests==2.23.0
 botbuilder-core==4.13.0
 botframework-connector==4.13.0
@@ -11,9 +9,8 @@ botbuilder-integration-applicationinsights-aiohttp==4.13.0
 azure-cognitiveservices-language-luis==0.2.0
 datatypes-date-time>=1.0.0.a1
 msrest==0.6.10
+aiohttp==3.6.2
 unittest2
 aiounittest
-opencensus==0.11.1
-opencensus-context==0.1.3
-opencensus-ext-azure==1.1.8
+opencensus-ext-azure
 emoji==1.7.0
