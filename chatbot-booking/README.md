@@ -51,7 +51,7 @@ logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=<YOURIns
 logger.setLevel(logging.DEBUG)
 ```
 
-## To try thye bot application
+## To try the bot application
 
 - Clone the repository
 ```bash
