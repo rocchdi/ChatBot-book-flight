@@ -1,3 +1,15 @@
+""""
+Ce code définit un dialogue principal pour un bot de messagerie, qui utilise le framework BotBuilder de Microsoft pour construire des chatbots. Il importe les différents dialogues utilisés dans le code, tels que le WaterfallDialog, les prompts TextPrompt, ChoicePrompt et ConfirmPrompt, ainsi que d'autres classes utiles.
+
+La classe principale MainDialog hérite de la classe ComponentDialog et est utilisée pour gérer le déroulement de toutes les conversations avec le bot. Elle crée plusieurs dialogues internes pour différentes fonctionnalités telles que la création de réservations de vols et l'aide. Elle utilise un dialogue en cascades appelé WaterfallDialog pour gérer le déroulement de la conversation. Le dialogue en cascades comporte quatre étapes:
+
+userid_step: génère un ID d'utilisateur aléatoire pour le client s'il n'en a pas déjà un.
+intro_step: demande à l'utilisateur de sélectionner une opération, telle que la réservation de vols ou l'aide.
+act_step: en fonction de la sélection de l'utilisateur, lance le dialogue approprié, soit pour la réservation de vols, soit pour l'aide.
+final_step: remplace le dialogue actuel par le dialogue principal pour permettre à l'utilisateur de faire un autre choix.
+
+"""
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,
