@@ -1,5 +1,4 @@
 #
-
 class UserDetails:
     def __init__(
         self,

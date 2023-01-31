@@ -1,7 +1,6 @@
 #main application file : app.py
 
 
-
 from http import HTTPStatus
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response

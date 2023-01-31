@@ -14,6 +14,7 @@ réponses de l'utilisateur sont correctement traitées.
 
 """
 
+
 #pytest unittesting.py
 #pytest unittesting.py::test_booking_details
 #python unitesting.py
