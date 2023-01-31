@@ -1,3 +1,4 @@
+#requirements to install in your environment
 asyncio>=3.4.3
 requests==2.23.0
 botbuilder-core==4.13.0
