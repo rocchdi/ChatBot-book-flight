@@ -6,6 +6,7 @@
 # jusqu'à ce que toutes les informations nécessaires aient été collectées.
 
 
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,

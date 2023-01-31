@@ -14,6 +14,7 @@ final_step: remplace le dialogue actuel par le dialogue principal pour permettre
 
 
 
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,

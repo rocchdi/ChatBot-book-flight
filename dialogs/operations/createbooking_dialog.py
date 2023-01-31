@@ -7,6 +7,7 @@
 # des informations sur les activités du bot.
 
 
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,

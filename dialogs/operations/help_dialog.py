@@ -9,6 +9,8 @@ from botbuilder.core import MessageFactory, TurnContext, CardFactory, UserState
 from botbuilder.schema import InputHints, CardAction, ActionTypes, SuggestedActions
 
 
+
+
 class HelpDialog(ComponentDialog):
     def __init__(self, dialog_id: str = None):
         super(HelpDialog, self).__init__(dialog_id or HelpDialog.__name__)
