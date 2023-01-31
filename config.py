@@ -1,3 +1,5 @@
+# Configuration
+
 class DefaultConfig:
     """Bot Configuration"""
 

@@ -11,6 +11,7 @@ La classe "BudgetPromptTest" contient deux tests pour tester les fonctionnalité
 un budgetet l'autre pour demander une date de voyage. Ces tests utilisent des instances de la classe "TestAdapter"
 pour simuler des interactions avec un utilisateur et vérifier si le bot répond correctement aux prompts et si les
 réponses de l'utilisateur sont correctement traitées.
+
 """
 
 #pytest unittesting.py
