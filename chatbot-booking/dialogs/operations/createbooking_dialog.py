@@ -130,7 +130,7 @@ class CreateBookingDialog(ComponentDialog):
             await step_context.context.send_activity(msg)
             return await step_context.end_dialog() 
         elif order_desc in Identity:
-            msg_text = "I am an AI language model Bot created by an Openclassrooms student, trained on a diverse range of intents and flight booking descriptions to help you book your flight...."
+            msg_text = "I am an AI language model Bot created by FlyMe, trained on a diverse range of intents and flight booking descriptions to help you book your flight...."
             msg = MessageFactory.text(
                 msg_text, msg_text, InputHints.ignoring_input
             ) 
