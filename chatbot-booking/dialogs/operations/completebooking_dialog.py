@@ -1,3 +1,11 @@
+# dans le cas où on a des missing entities dans la demande de l'utilisateur, On crée une boîte de dialogue personnalisée, completeBookingDialog,
+# qui est un WaterfallDialog qui collecte des informationssur le voyage telles que la ville de départ, la ville de destination, la date de départ, la date de retour et le budget.
+# Il utilise plusieurs autres boîtes de dialogue intégrées (TextPrompt, ChoicePrompt, BudgetResolverDialog) ainsi que des entités
+# personnalisées (telles que "or_city", "dst_city", "str_date", "end_date") pour stocker les entrées de l'utilisateur.
+# La boîte de dialogue est conçue pour demander à l'utilisateur des informations étape par étape, en passant d'une étape à la suivante
+# jusqu'à ce que toutes les informations nécessaires aient été collectées.
+
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,
