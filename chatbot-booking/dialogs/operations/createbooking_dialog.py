@@ -1,3 +1,12 @@
+#On définit un dialogue de bot intitulé CreateBookingDialog en utilisant la bibliothèque BotBuilder pour Python.
+# Le dialogue permet à un utilisateur de fournir une description de vol et utilise une API LUIS pour comprendre l'intention
+# de l'utilisateur et les détails du vol. Le code importe des classes nécessaires à partir de la bibliothèque BotBuilder
+# pour définir les étapes du dialogue (WaterfallDialog), les boîtes de dialogue pour demander des informations
+# à l'utilisateur (TextPrompt, ChoicePrompt, ConfirmPrompt), les messages à envoyer à l'utilisateur (MessageFactory),
+# et le traitement des données LUIS (extract_luis_info). Le code utilise également un objet de journalisation pour enregistrer
+# des informations sur les activités du bot.
+
+
 from botbuilder.dialogs import (
     ComponentDialog,
     WaterfallDialog,
