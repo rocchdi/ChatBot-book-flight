@@ -5,8 +5,8 @@ from botbuilder.dialogs import (
     DialogTurnResult,
 )
 from botbuilder.dialogs.prompts import TextPrompt, PromptOptions, ChoicePrompt, ConfirmPrompt
-from botbuilder.core import MessageFactory, TurnContext, CardFactory, UserState
-from botbuilder.schema import InputHints, CardAction, ActionTypes, SuggestedActions
+from botbuilder.core import MessageFactory
+from botbuilder.schema import InputHints
 
 
 

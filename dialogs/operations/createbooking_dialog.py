@@ -23,7 +23,7 @@ from botbuilder.schema import InputHints
 from .completebooking_dialog import completeBookingDialog
 
 from config import DefaultConfig
-from azure.cognitiveservices.language.luis.runtime import LUISRuntimeClient
+#from azure.cognitiveservices.language.luis.runtime import LUISRuntimeClient
 #from msrest.authentication import CognitiveServicesCredentials
 
 import logging
