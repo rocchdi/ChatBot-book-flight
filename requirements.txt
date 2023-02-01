@@ -59,7 +59,6 @@ pycparser==2.21
 PyJWT==1.7.1
 python-dateutil==2.8.2
 pytz==2022.7.1
-pywin32
 recognizers-text==1.0.2a2
 recognizers-text-choice==1.0.2a2
 recognizers-text-date-time==1.0.2a2
