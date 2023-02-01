@@ -1,15 +1,16 @@
-#from http import HTTPStatus
-from flask import Flask,request,Response
-import asyncio
+#main application file : app.py
 
-#from aiohttp.web import Request, Response, json_response
+
+from http import HTTPStatus
+from aiohttp import web
+from aiohttp.web import Request, Response, json_response
 from botbuilder.core import(
     BotFrameworkAdapterSettings,
     ConversationState,
     MemoryStorage,
     UserState,
 )
-#from botbuilder.core.integration import aiohttp_error_middleware
+from botbuilder.core.integration import aiohttp_error_middleware
 from botbuilder.schema import Activity
 
 from config import DefaultConfig
@@ -41,38 +42,29 @@ HELP_DIALOG = HelpDialog()
 DIALOG = MainDialog(CREATEBOOKING_DIALOG, HELP_DIALOG)
 BOT = DialogAndWelcomeBot(CONVERSATION_STATE, USER_STATE, DIALOG)
 
- 
 
-app = Flask(__name__)
-loop = asyncio.get_event_loop()
- 
-
-SETTINGS = BotFrameworkAdapterSettings("", "")
-DAPTER = AdapterWithErrorHandler(SETTINGS, CONVERSATION_STATE)
-
-
-BOT = DialogAndWelcomeBot(CONVERSATION_STATE, USER_STATE, DIALOG)
-
-
-
-@app.route("/api/messages",methods=["POST"])
-def messages():
-    if "application/json" in request.headers["content-type"]:
-      jsonmessage = request.json
+#Listen for incoming requests on /api/messages.
+async def messages(req: Request)-> Response:
+    #Main bor message handler.
+    if "application/json" in req.headers["Content-Type"]:
+        body = await req.json()
     else:
-      return Response(status=415)
+        return Response(status=HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
 
-    activity = Activity().deserialize(jsonmessage)
+    activity = Activity().deserialize(body)
+    auth_header = req.headers["Authorization"] if "Authorization" in req.headers else ""
 
-    async def turn_call(turn_context):
-        await BOT.on_turn(turn_context)
+    response = await ADAPTER.process_activity(activity, auth_header, BOT.on_turn)
+    if response:
+        return json_response(data=response.body, status=response.status)
 
-    task = loop.create_task(ADAPTER.process_activity(activity,"",turn_call))
-    loop.run_until_complete(task)
+    return Response(status = HTTPStatus.OK)
 
-    return Response(status=200)
-
+APP =  web.Application(middlewares = [aiohttp_error_middleware])
+APP.router.add_post("/api/messages", messages)
 
 if __name__ == "__main__":
-    app.run(host = "localhost", port = CONFIG.PORT)
-     
+    try:
+        web.run_app(APP, host = "localhost", port = CONFIG.PORT)
+    except Exception as error:
+        raise error
