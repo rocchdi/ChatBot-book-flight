@@ -61,12 +61,15 @@ async def messages(req: Request)-> Response:
     return Response(status = HTTPStatus.OK)
 
 
-
 # python3.8 -m aiohttp.web -H 0.0.0.0 -P 8000 app:init_func
 def init_func(argv):
-    app = web.Application(middlewares=[bot_telemetry_middleware, aiohttp_error_middleware])
+    app = web.Application(middlewares=[aiohttp_error_middleware])
     app.router.add_post("/api/messages", messages)
     return app
+
+
+
+
 
 
 if __name__ == "__main__":
