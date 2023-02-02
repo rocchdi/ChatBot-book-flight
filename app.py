@@ -26,7 +26,7 @@ from dialogs.operations.completebooking_dialog import completeBookingDialog
 
 CONFIG = DefaultConfig()
 
-SETTINGS = BotFrameworkAdapterSettings("", "")
+SETTINGS = BotFrameworkAdapterSettings(CONFIG.MS_APP_ID, CONFIG.MS_APP_PASSWORD)
 
 MEMORY = MemoryStorage()
 USER_STATE = UserState(MEMORY)
