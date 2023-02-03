@@ -15,15 +15,19 @@ from botbuilder.dialogs.prompts import (
 #from .cancel_and_help_dialog import CancelAndHelpDialog
 
 from botbuilder.dialogs import ComponentDialog
-
+from config import DefaultConfig
 
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 
- 
+CONFIG = DefaultConfig()
+
+
 logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=28845d90-dbbe-4a5a-826b-6fb138c8c9e7'))
-#logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=28845d90-dbbe-4a5a-826b-6fb138c8c9e7'))
+#logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=28845d90-dbbe-4a5a-826b-6fb138c8c9e7'))
+logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=f0155c77-7588-4c00-a385-525862c02a00'))
+#logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
+
 
 #logger.setLevel(logging.INFO)
 logger.setLevel(logging.DEBUG)

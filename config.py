@@ -24,4 +24,3 @@ class DefaultConfig:
     APPINSIGHTS_INSTRUMENTATION = os.environ.get(
         "AppInsightsInstrumentation", ""
     )
-     
