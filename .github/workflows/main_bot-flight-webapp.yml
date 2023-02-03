@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    environment: Production
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +34,18 @@ jobs:
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
       #  Add step to run tests
-      - name: Run tests
+      - name: Run tests   
+        env:
+          MS_APP_ID: ''
+          MS_APP_PASSWORD: ''
+          APP_ID: ${{secrets.LUISAPPID}}
+          APP_PREDICTION_KEY: ${{secrets.LUISAPIKEY}}
+          LUIS_API_HOST_NAME: ${{secrets.LUISAPIHOSTNAME}}
+          ENDPOINT_PREDICTION_URL: ${{secrets.ENDPOINT_PREDICTION_URL}}
+          LUIS_APP_URL: ${{secrets.LUIS_APP_URL}}
+          INSIGHT_INSTRUMENT_KEY: ${{secrets.APPINSIGHTSINSTRUMENTATIONKEY}}
+          APPINSIGHTS_INSTRUMENTATION: ${{secrets.APPINSIGHTSINSTRUMENTATION}}
+
         run: python -m unittest discover tests
       
       - name: Upload artifact for deployment jobs
