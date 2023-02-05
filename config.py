@@ -3,13 +3,13 @@
 # Licensed under the MIT License.
 """Configuration for the bot."""
 
-import os
-import sys
-from dotenv import load_dotenv
+#import os
+#import sys
+#from dotenv import load_dotenv
 
 # Load the environment variables from the .env file only when running locally
-if not "AZURE_FUNCTION_APP_NAME" in os.environ:
-    load_dotenv()
+#if not "AZURE_FUNCTION_APP_NAME" in os.environ:
+#    load_dotenv()
 
 
 class DefaultConfig:
