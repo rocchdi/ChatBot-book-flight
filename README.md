@@ -46,8 +46,11 @@ To log activity and personal information in azure application insight, we includ
 
 The required code is as follows:
 ```python
+import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+ 
 logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=<YOURInstrumentationKey>'))
+logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
 logger.setLevel(logging.DEBUG)
 ```
 

@@ -33,19 +33,20 @@ from opencensus.ext.azure.log_exporter import AzureLogHandler
 
 import string
 import random
-#import orderApp
-from datetime import date
+ 
 
 import luisApp
 
+
+ 
 CONFIG = DefaultConfig()
 
 
 
 logger = logging.getLogger(__name__)
 #logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=28845d90-dbbe-4a5a-826b-6fb138c8c9e7'))
-logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=f0155c77-7588-4c00-a385-525862c02a00'))
-#logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
+#logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=f0155c77-7588-4c00-a385-525862c02a00'))
+logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
 
 #logger.setLevel(logging.INFO)
 logger.setLevel(logging.DEBUG)
@@ -59,6 +60,8 @@ def extract_luis_info(luis_output):
     for entity in luis_output['entities']:
         result[entity['type']] = entity['entity']
     return result
+
+
 
 
 
@@ -77,7 +80,7 @@ class CreateBookingDialog(ComponentDialog):
         self.add_dialog(
             WaterfallDialog(
                 WaterfallDialog.__name__,
-                [self.demand_step, self.luis_step, self.completeorder_step, self.summary_step, self.confirmation_step]
+                [self.demand_step, self.luis_step, self.completebooking_step, self.summary_step, self.confirmation_step]
             )
         )
 
@@ -85,6 +88,7 @@ class CreateBookingDialog(ComponentDialog):
 
     async def demand_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         message_text = "Please provide your flight description..."
+        logger.info("Bot ---> Please provide your flight description...")
         prompt_message = MessageFactory.text(
             message_text, message_text, InputHints.expecting_input)
         return await step_context.prompt(
@@ -95,70 +99,69 @@ class CreateBookingDialog(ComponentDialog):
     async def luis_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         user_details = step_context.options
         user_id = user_details.user_id
-        order_desc = str(step_context.result)
+        booking_desc = str(step_context.result)
 
-        #user_details.orders_list = []
-        user_details.orders_list = dict()
+        user_details.bookings_list = dict()
 
         # Luis configuration
          
         
-        data = luisApp.getLuisResponse(order_desc)
+        data = luisApp.getLuisResponse(booking_desc)
         print(data)
+        logger.info(f"user --> : {booking_desc}")
 
-
-        #logger.info('luis Application : getLuisResponse')
-
-        properties = {"custom_dimensions": {"function": 'luisApp', 'Luis data': data}}
-        #logger.info('Captured Luis data : ', extra=properties)
-
-  
- 
         results = extract_luis_info(data)
         intent = results['intent']
         print(results)
-        properties = {"custom_dimensions": {"function": 'luisApp', 'Luis results': results}}
+        #properties = {"custom_dimensions": {"function": 'luisApp', 'Luis results': results}}
         #logger.info("createbookingdialog.py : ", extra=properties)
 
-        Greetings = ['Hello','hello','how are you','how do you do', 'morning', 'good morning', 'Bye','bye bye', 'good bye','see you','nice to talk to you','I like you','I love you'] #Hello phrases
-        Identity = ['what is your name', 'who are you']
-        Others = ['what time is it','what is the weather like', 'What is new','whats up','Can you advice me']  #hors contexte
 
-        if order_desc in Greetings:                              
+        #Greetings  : Hello phrases
+        if not(booking_desc.lower().find("hello") == -1) \
+                or not(booking_desc.lower().find("how are") == -1) \
+                or not(booking_desc.lower().find("good morning") == -1) \
+                or not(booking_desc.lower().find("bye") == -1) \
+                or not(booking_desc.lower().find("you") == -1):                        
             msg_text = "Happy to serve you!"
+            logger.info("Happy to serve you!")
             msg = MessageFactory.text(
                 msg_text, msg_text, InputHints.ignoring_input
             ) 
             await step_context.context.send_activity(msg)
             return await step_context.end_dialog() 
-        elif order_desc in Identity:
+        elif not(booking_desc.lower().find("your name") == -1) or not(booking_desc.lower().find("who are") == -1) or not(booking_desc.lower().find("a bot") == -1): #intent for identity
             msg_text = "I am an AI language model Bot created by FlyMe, trained on a diverse range of intents and flight booking descriptions to help you book your flight...."
+            logger.info("Bot --> : I am an AI language model Bot created by FlyMe, trained on a diverse range of intents and flight booking descriptions to help you book your flight....")
             msg = MessageFactory.text(
                 msg_text, msg_text, InputHints.ignoring_input
             ) 
             await step_context.context.send_activity(msg)
             return await step_context.end_dialog()
-        elif order_desc in Others:
-            msg_text = "Caution! This is a Flight Booking service..."
+        elif not(booking_desc.lower().find("i love") == -1) or not(booking_desc.lower().find("i like") == -1) or not(booking_desc.lower().find("what") == -1): #intent hors contexte
+            msg_text = "I do not understand your request, This is a Flight Booking bot!"
+            logger.info("Bot --> : I do not understand your request, This is a Flight Booking bot!")
+            logger.error("Bad answer!")
             msg = MessageFactory.text(
                 msg_text, msg_text, InputHints.ignoring_input
             ) 
             await step_context.context.send_activity(msg)
-            return await step_context.end_dialog() 
+            return await step_context.end_dialog()  
         elif intent == "BookFlight":
             #check missing entities
             if 'or_city' in results:
-                user_details.orders_list.update({"or_city": results['or_city']})
+                user_details.bookings_list.update({"or_city": results['or_city']})
             if 'dst_city' in results:
-                user_details.orders_list.update({"dst_city": results['dst_city']})
+                user_details.bookings_list.update({"dst_city": results['dst_city']})
             if 'str_date' in results:
-                user_details.orders_list.update({"str_date": results['str_date']})
+                user_details.bookings_list.update({"str_date": results['str_date']})
             if 'end_date' in results:
-                user_details.orders_list.update({"end_date": results['end_date']})
+                user_details.bookings_list.update({"end_date": results['end_date']})
             if 'budget' in results:
-                user_details.orders_list.update({"budget": results['budget']})
+                user_details.bookings_list.update({"budget": results['budget']})
         else:
-            msg_text = "I do not understand your request, This is a Flight Booking bot serviCe !"
+            msg_text = "I do not understand your request, This is a Flight Booking bot !"
+            logger.info("Bot --> : I do not understand your request, This is a Flight Booking bot !")
             msg = MessageFactory.text(
                 msg_text, msg_text, InputHints.ignoring_input
             )
@@ -173,14 +176,14 @@ class CreateBookingDialog(ComponentDialog):
 
 
     #ask for missing entities
-    async def completeorder_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
+    async def completebooking_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         user_details = step_context.options
 
-        if len(user_details.orders_list) < 5:
+        if len(user_details.bookings_list) < 5:
             return await step_context.begin_dialog(self._completebooking_dialog_id, user_details)
         
         else:
-            user_details.entities = user_details.orders_list
+            user_details.entities = user_details.bookings_list
             return await step_context.next(user_details)
 
 
@@ -205,8 +208,8 @@ class CreateBookingDialog(ComponentDialog):
         # Confirm booking details with user
         msg_text = (f"You would like to book a flight from {or_city} to {dst_city} on the {str_date} returning {end_date} with a budget of {budget} : Please Confirm")
 
-        logger.info(f"Captured booking summary : flight from {or_city} to {dst_city} on the {str_date} returning {end_date} with a budget of {budget} : Please Confirm")
-        print(f"Captured booking summary : flight from {or_city} to {dst_city} on the {str_date} returning {end_date} with a budget of {budget} : Please Confirm")
+        logger.info(f"Bot --> : You would like to book a flight from {or_city} to {dst_city} on the {str_date} returning {end_date} with a budget of {budget} : Please Confirm")
+        print(f"Booking summary : flight from {or_city} to {dst_city} on the {str_date} returning {end_date} with a budget of {budget} : Please Confirm")
 
          
 
@@ -225,14 +228,15 @@ class CreateBookingDialog(ComponentDialog):
 
 
     async def confirmation_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
-        #generate order id
+        #generate booking id
         N = 4
-        order_id = ''.join(random.choices(string.digits, k= N))
-        order_id = 'ord' + order_id
+        booking_id = ''.join(random.choices(string.digits, k= N))
+        booking_id = 'ord' + booking_id
 
         response = step_context.result
         if response:
-            msg_text = ("Your flight booking is confirmed, your Booking number is : " + order_id)
+            msg_text = ("Your flight booking is confirmed, your Booking number is : " + booking_id)
+            logger.info(f"Bot --> : Your flight booking is confirmed, your Booking number is : {booking_id}")
             msg = MessageFactory.text(msg_text, msg_text, InputHints.ignoring_input)
             await step_context.context.send_activity(msg)            
              
@@ -241,8 +245,8 @@ class CreateBookingDialog(ComponentDialog):
             msg = MessageFactory.text(msg_text, msg_text, InputHints.ignoring_input)
             await step_context.context.send_activity(msg)
 
-            logger.info("Captured confirmation step : flight is not confirmed!")
-            print("Captured confirmation step : flight is not confirmed!")
+            logger.info("Bot --> :  : flight is not confirmed!")
+            print("confirmation step : flight is not confirmed!")
 
             logger.error("Bad answer!")
             print("Bad answer!")

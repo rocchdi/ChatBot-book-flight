@@ -19,10 +19,18 @@ from botbuilder.schema import InputHints
 
 from .budget_resolver_dialog import BudgetResolverDialog
 
-#import json
-#import requests
+
+from config import DefaultConfig
+
+import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 
 
+CONFIG = DefaultConfig()
+
+logger = logging.getLogger(__name__)
+logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
+logger.setLevel(logging.DEBUG)
 
 
 
@@ -50,15 +58,16 @@ class completeBookingDialog(ComponentDialog):
         user_details = step_context.options
         user_details.entities = dict()
 
-        order_l = user_details.orders_list
-        if "or_city" not in order_l:
+        booking_l = user_details.bookings_list
+        if "or_city" not in booking_l:
             message_text = "Please provide the depature city "
+            logger.info("Bot --> : Please provide the departure city")
             prompt_message = MessageFactory.text(message_text, message_text, InputHints.expecting_input)
             return await step_context.prompt(
                 TextPrompt.__name__, PromptOptions(prompt=prompt_message)
             )
         else:
-            user_details.entities.update({"or_city": order_l["or_city"]})
+            user_details.entities.update({"or_city": booking_l["or_city"]})
 
         return await step_context.next(user_details)
 
@@ -71,16 +80,18 @@ class completeBookingDialog(ComponentDialog):
         rep =  step_context.result
         if "or_city" not in user_details.entities:
             user_details.entities.update({"or_city": rep})
+            logger.info(f"departure city : {rep}")
 
-        order_l = user_details.orders_list
-        if "dst_city" not in order_l:
+        booking_l = user_details.bookings_list
+        if "dst_city" not in booking_l:
             message_text = "Please provide the destination city"
+            logger.info("Bot --> : Please provide the destination city")
             prompt_message = MessageFactory.text(message_text, message_text, InputHints.expecting_input)
             return await step_context.prompt(
                 TextPrompt.__name__, PromptOptions(prompt=prompt_message)
             )
         else:
-            user_details.entities.update({"dst_city": order_l["dst_city"]})
+            user_details.entities.update({"dst_city": booking_l["dst_city"]})
 
         return await step_context.next(user_details)
 
@@ -92,17 +103,19 @@ class completeBookingDialog(ComponentDialog):
         user_details = step_context.options
         rep =  step_context.result
         if "dst_city" not in user_details.entities:
-            user_details.entities.update({"dst_city": rep})      
+            user_details.entities.update({"dst_city": rep})
+            logger.info(f"destination city : {rep}")    
 
-        order_l = user_details.orders_list
-        if "str_date" not in order_l:
+        booking_l = user_details.bookings_list
+        if "str_date" not in booking_l:
             message_text = "Please provide the departure date"
+            logger.info("Bot --> : Please provide the departure date")
             prompt_message = MessageFactory.text(message_text, message_text, InputHints.expecting_input)
             return await step_context.prompt(
                 TextPrompt.__name__, PromptOptions(prompt=prompt_message)
             )
         else:
-            user_details.entities.update({"str_date": order_l["str_date"]})
+            user_details.entities.update({"str_date": booking_l["str_date"]})
 
         return await step_context.next(user_details)
 
@@ -113,16 +126,18 @@ class completeBookingDialog(ComponentDialog):
         rep =  step_context.result
         if "str_date" not in user_details.entities:
             user_details.entities.update({"str_date": rep})
+            logger.info(f"departure date : {rep}")
 
-        order_l = user_details.orders_list
-        if "end_date" not in order_l:
+        booking_l = user_details.bookings_list
+        if "end_date" not in booking_l:
             message_text = "Please provide the return date"
+            logger.info("Bot --> : Please provide the return date")
             prompt_message = MessageFactory.text(message_text, message_text, InputHints.expecting_input)
             return await step_context.prompt(
                 TextPrompt.__name__, PromptOptions(prompt=prompt_message)
             )
         else:
-            user_details.entities.update({"end_date": order_l["end_date"]})
+            user_details.entities.update({"end_date": booking_l["end_date"]})
 
         return await step_context.next(user_details)
 
@@ -139,15 +154,16 @@ class completeBookingDialog(ComponentDialog):
         rep =  step_context.result
         if "end_date" not in user_details.entities:
             user_details.entities.update({"end_date": rep})
+            logger.info(f"return date : {rep}")
     
 
-        order_l = user_details.orders_list
-        if "budget" not in order_l:        
+        booking_l = user_details.bookings_list
+        if "budget" not in booking_l:        
             return await step_context.begin_dialog(
                 BudgetResolverDialog.__name__, user_details
             )  # pylint: disable=line-too-long
         else:
-            user_details.entities.update({"budget": order_l["budget"]})
+            user_details.entities.update({"budget": booking_l["budget"]})
         
         return await step_context.next(user_details)
 
@@ -159,5 +175,6 @@ class completeBookingDialog(ComponentDialog):
         rep =  step_context.result  # check the format
         if "budget" not in user_details.entities:
             user_details.entities.update({"budget": rep})
+            logger.info(f"budget : {rep}")
 
         return await step_context.end_dialog(user_details)
