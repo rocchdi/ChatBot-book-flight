@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 """Configuration for the bot."""
 
-#import os
+import os
 #import sys
 #from dotenv import load_dotenv
 
