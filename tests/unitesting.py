@@ -28,7 +28,7 @@ import unittest
 
 
 from luisApp import getLuisResponse
-from dialogs.operations.createbooking_dialog import extract_luis_info
+#from dialogs.operations.createbooking_dialog import extract_luis_info
 
 
 # BOT FRAMEWORK
@@ -47,6 +47,17 @@ from botbuilder.core.adapters import TestAdapter
 from botbuilder.dialogs.prompts import NumberPrompt,DateTimePrompt
 
 import aiounittest
+
+
+def extract_luis_info(luis_output):
+    result = {}
+    result['intent'] = luis_output['topScoringIntent']['intent']
+    for entity in luis_output['entities']:
+        result[entity['type']] = entity['entity']
+    return result
+
+
+    
 
 class TestLuis(unittest.TestCase):
 
