@@ -20,11 +20,13 @@ import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 
 
+
 CONFIG = DefaultConfig()
 
 logger = logging.getLogger(__name__)
 logger.addHandler(AzureLogHandler(connection_string=f'InstrumentationKey={CONFIG.INSIGHT_INSTRUMENT_KEY}'))
 logger.setLevel(logging.DEBUG)
+
 
 
 
