@@ -118,11 +118,11 @@ class CreateBookingDialog(ComponentDialog):
 
 
         #Greetings  : Hello phrases
-        if not(booking_desc.lower().find("hello") == -1) \
+        if (booking_desc.lower() =="hello")  \
                 or not(booking_desc.lower().find("how are") == -1) \
-                or not(booking_desc.lower().find("good morning") == -1) \
-                or not(booking_desc.lower().find("bye") == -1) \
-                or not(booking_desc.lower().find("you") == -1):                        
+                or not(booking_desc.lower().find("morning") == -1) \
+                or not(booking_desc.lower().find("good") == -1) \
+                or not(booking_desc.lower().find("bye") == -1):  
             msg_text = "Happy to serve you!"
             logger.info("Happy to serve you!")
             msg = MessageFactory.text(
@@ -130,7 +130,7 @@ class CreateBookingDialog(ComponentDialog):
             ) 
             await step_context.context.send_activity(msg)
             return await step_context.end_dialog() 
-        elif not(booking_desc.lower().find("your name") == -1) or not(booking_desc.lower().find("who are") == -1) or not(booking_desc.lower().find("a bot") == -1): #intent for identity
+        elif not(booking_desc.lower().find("your name") == -1) or not(booking_desc.lower().find("are") == -1) or not(booking_desc.lower().find("a bot") == -1): #intent for identity
             msg_text = "I am an AI language model Bot created by FlyMe, trained on a diverse range of intents and flight booking descriptions to help you book your flight...."
             logger.info("Bot --> : I am an AI language model Bot created by FlyMe, trained on a diverse range of intents and flight booking descriptions to help you book your flight....")
             msg = MessageFactory.text(
@@ -138,7 +138,10 @@ class CreateBookingDialog(ComponentDialog):
             ) 
             await step_context.context.send_activity(msg)
             return await step_context.end_dialog()
-        elif not(booking_desc.lower().find("i love") == -1) or not(booking_desc.lower().find("i like") == -1) or not(booking_desc.lower().find("what") == -1): #intent hors contexte
+        elif not(booking_desc.lower().find("i love") == -1) \
+                    or not(booking_desc.lower().find("i like") == -1) \
+                    or not(booking_desc.lower().find("you") == -1) \
+                    or not(booking_desc.lower().find("what") == -1): #intent hors contexte
             msg_text = "I do not understand your request, This is a Flight Booking bot!"
             logger.info("Bot --> : I do not understand your request, This is a Flight Booking bot!")
             logger.error("Bad answer!")
